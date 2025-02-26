@@ -1,0 +1,30 @@
+name: Download data
+
+on:
+  schedule:
+    - cron: "0 * * * *"
+
+concurrency:
+  group: "download"
+  cancel-in-progress: true
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  download:
+    name: "Download exchange rates"
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+      - name: Download ECB daily
+        run: wget https://www.ecb.europa.eu/stats/eurofxref/eurofxref-daily.xml -O ecb-daily.xml
+      - name: Download ECB last 90 days
+        run: wget https://www.ecb.europa.eu/stats/eurofxref/eurofxref-hist-90d.xml -O ecb-historic-90d.xml
+      - name: Download ECB historic
+        run: wget https://www.ecb.europa.eu/stats/eurofxref/eurofxref-hist.xml -O ecb-historic.xml
+      - name: Download IMF data
+        run: wget https://www.imf.org/external/np/fin/data/rms_five.aspx?tsvflag=Y -O imf.tsv
