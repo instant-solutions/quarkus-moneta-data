@@ -1,4 +1,4 @@
-name: Download data
+name: Download ECB data
 
 on:
   schedule:
@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
 
 concurrency:
-  group: "download"
+  group: "download-ecb"
   cancel-in-progress: true
 
 defaults:
@@ -15,7 +15,7 @@ defaults:
 
 jobs:
   download:
-    name: "Download exchange rates"
+    name: "Download ECB exchange rates"
     runs-on: ubuntu-latest
 
     permissions:
@@ -30,8 +30,6 @@ jobs:
         run: wget https://www.ecb.europa.eu/stats/eurofxref/eurofxref-hist-90d.xml -O ecb-historic-90d.xml
       - name: Download ECB historic
         run: wget https://www.ecb.europa.eu/stats/eurofxref/eurofxref-hist.xml -O ecb-historic.xml
-      - name: Download IMF data
-        run: wget https://www.imf.org/external/np/fin/data/rms_five.aspx?tsvflag=Y -O imf.tsv
       - uses: stefanzweifel/git-auto-commit-action@v5
         with:
-          commit_message: Updated exchange rate data from ECB and IMF
+          commit_message: Updated exchange rate data from ECB
