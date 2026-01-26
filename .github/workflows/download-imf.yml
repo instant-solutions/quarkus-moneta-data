@@ -1,0 +1,31 @@
+name: Download data
+
+on:
+  schedule:
+    - cron: "30 23 * * *"
+  workflow_dispatch:
+
+concurrency:
+  group: "download-imf"
+  cancel-in-progress: true
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  download:
+    name: "Download IMF exchange rates"
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+      - name: Download IMF data
+        run: wget https://www.imf.org/external/np/fin/data/rms_five.aspx?tsvflag=Y -O imf.tsv
+      - uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: Updated exchange rate data from IMF
